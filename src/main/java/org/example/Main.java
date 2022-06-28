@@ -78,6 +78,7 @@ public class Main {
 
         // BreweryAnalyzer test
         BreweryAnalyzer analyzer = new BreweryAnalyzer();
+
         analyzer.numberOfBreweryWithWebsite(breweries);
         analyzer.numberOfBreweryInDelawareWithTacos(breweries);
 
