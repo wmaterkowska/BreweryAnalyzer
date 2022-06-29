@@ -50,4 +50,25 @@ public class Brewery {
 
     @CsvBindByPosition(position = 14)
     private String websites;
+
+//    public Brewery(String id, String address, String categories, String city, String country, String hours, String keys, String latitude, String longitude, String menus, String name, String postalCode, String province, String twitter, String websites) {
+//        this.id = id;
+//        this.address = address;
+//        this.categories = categories;
+//        this.city = city;
+//        this.country = country;
+//        this.hours = hours;
+//        this.keys = keys;
+//        this.latitude = latitude;
+//        this.longitude = longitude;
+//        this.menus = menus;
+//        this.name = name;
+//        this.postalCode = postalCode;
+//        this.province = province;
+//        this.twitter = twitter;
+//        this.websites = websites;
+//    }
+//
+//    public Brewery(String id) {
+//    }
 }

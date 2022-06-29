@@ -1,10 +1,13 @@
 package org.example;
 
+import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.exceptions.CsvException;
+import com.opencsv.exceptions.CsvValidationException;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -15,73 +18,47 @@ public class Main {
 //        System.out.println("give a filename and path to it as a String (for example: src/main/resources/breweries_usa.csv) ");
 //        String fileName = inputPath.next();
 
-        String fileName = "src/main/resources/breweries_usa.csv";
+        String fileName = "src/main/resources/breweries_usa_whole.csv";
 
-//        // read whole file at once and print it to terminal
-//        try (CSVReader reader = new CSVReader(new FileReader(fileName))) {
-//            List<String[]> r = reader.readAll();
-//            r.forEach(x -> System.out.println(Arrays.toString(x)));
-//        } catch (CsvMalformedLineException e){
-//            System.out.println("invalid data");
-//
-//        }
-
-
-//        // read file line by line and print it to terminal
-//        try (CSVReader reader = new CSVReader(new FileReader(fileName))) {
-//            //find all headers
-////            String[] header = reader.readNext();
-////            ArrayList<String> headers = new ArrayList<>();
-////            for (int fieldNr = 0; fieldNr < header.length; fieldNr++){
-////                headers.add(header[fieldNr]);
-////            }
-////            System.out.println(headers);
-//
-//            String[] lineInArray;
-//            while ((lineInArray = reader.readNext()) != null) {
-//                for(int column = 0 ; column < lineInArray.length; column++ ){
-//                    System.out.print(lineInArray[column] + "|");
-//                }
-//                System.out.println();
-//            }
-//        } catch(CsvMalformedLineException e) {
-//            System.out.println("invalid data");
-//            System.out.println(e);
-//        }
-
-
-        // test for CsvProcessor headers method
-        CsvProcessor headers = new CsvProcessor();
-        System.out.println(headers.numberOfHeaders(fileName));
-        System.out.println(headers.getHeadersFromCsv(fileName));
-        System.out.println(headers.numberOfHeaders(fileName));
+//        // test for CsvProcessor headers method
+//        CsvProcessor headers = new CsvProcessor();
+//        System.out.println(headers.numberOfHeaders(fileName));
+//        System.out.println(headers.getHeadersFromCsv(fileName));
+//        System.out.println(headers.numberOfHeaders(fileName));
 
         // test for CSvProcessor reading methods
         CsvProcessor fileReader = new CsvProcessor();
-        fileReader.readCsvToList(fileName);
-        fileReader.readCsvAndPrint(fileName);
+//        fileReader.readCsvToList(fileName);
+//        fileReader.readCsvAndPrint(fileName);
+//        fileReader.readCsvLineByLineToList(fileName);
+//        fileReader.readCsvLineByLineAndPrint(fileName);
+//        fileReader.test(fileName);
 
-        CsvProcessor fileReaderLines = new CsvProcessor();
-        fileReaderLines.readCsvLineByLineAndPrint(fileName);
+        List<Brewery> breweries = fileReader.readCsvPutIntoBreweryList(fileName);
 
 
-        var brewery = new Brewery();
+//        CsvProcessor processor = new CsvProcessor();
+//        List<Brewery> breweries = new ArrayList<>();
+//        breweries = processor.readCsvPutIntoBreweryList(fileName);
 
-        try{
-            List<Brewery> breweries = new CsvToBeanBuilder(new FileReader(fileName)).withType(Brewery.class).build().parse();
-            breweries.forEach(System.out::println);
-        } catch (RuntimeException e){
-            System.out.println("invalid data " + e);
-        }
+//        try{
+//            List<Brewery> breweries = new CsvToBeanBuilder(new FileReader(fileName)).withType(Brewery.class).build().parse();
+//            breweries.forEach(System.out::println);
+//        } catch (RuntimeException e){
+//            System.out.println("invalid data " + e);
+//        }
 
-        List<Brewery> breweries = new CsvToBeanBuilder(new FileReader(fileName)).withType(Brewery.class).build().parse();
-
+//        List<Brewery> breweries = new CsvToBeanBuilder(new FileReader(fileName)).withType(Brewery.class).withSkipLines(1).build().parse();
+//        breweries.forEach(System.out::println);
+//
         // BreweryAnalyzer test
         BreweryAnalyzer analyzer = new BreweryAnalyzer();
-
+        analyzer.numberOfBreweriesInEachStateMap(breweries);
+        System.out.println("number of breweries in cities: " + analyzer.numberOfBreweriesInEachStateMap(breweries));
+        analyzer.topCitiesForBreweries(breweries);
         analyzer.numberOfBreweryWithWebsite(breweries);
         analyzer.numberOfBreweryInDelawareWithTacos(breweries);
-
+        analyzer.breweriesOffersWinePercentState(breweries);
 
 
     }

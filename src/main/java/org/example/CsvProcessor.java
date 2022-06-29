@@ -1,13 +1,12 @@
 package org.example;
 
 import com.opencsv.CSVReader;
+import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.exceptions.CsvException;
 import com.opencsv.exceptions.CsvMalformedLineException;
 import com.opencsv.exceptions.CsvValidationException;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,10 +42,9 @@ public class CsvProcessor {
             reader.close();
             r.forEach(x -> System.out.println(Arrays.toString(x)));
         } catch (CsvMalformedLineException | FileNotFoundException e){
-            System.out.println("invalid data " + e);
+            System.out.println(e);
         } catch (IOException | CsvException e) {
-            System.out.println("invalid data " + e);
-            //throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -59,10 +57,9 @@ public class CsvProcessor {
             r.forEach(x -> System.out.println(Arrays.toString(x)));
 
         } catch (CsvMalformedLineException | FileNotFoundException e){
-            System.out.println("invalid data " + e);
+            System.out.println(e);
         } catch (IOException | CsvException e) {
-            System.out.println("invalid data " + e);
-            //throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
         return r;
     }
@@ -86,9 +83,34 @@ public class CsvProcessor {
         } catch (IOException | CsvValidationException e) {
             throw new RuntimeException(e);
         }
-
     }
 
+    // read file line by line and put it to list
+    public List<String[]> readCsvLineByLineToList(String filename){
+        List<String[]> listBreweries = new ArrayList<>();
 
+        try (CSVReader reader = new CSVReader(new FileReader(filename))) {
+            String[] lineInArray;
+            while ((lineInArray = reader.readNext()) != null) {
+                for(int column = 0 ; column < lineInArray.length; column++ ){
+                    listBreweries.add(lineInArray);
+                }
+            }
+        } catch(CsvMalformedLineException e) {
+            System.out.println(e);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException | CsvValidationException e) {
+            throw new RuntimeException(e);
+        }
+        return listBreweries;
+    }
+
+    // read CSV file into object - Brewery list
+    public List<Brewery> readCsvPutIntoBreweryList(String filename) throws FileNotFoundException {
+
+        List<Brewery> breweries = new CsvToBeanBuilder(new FileReader(filename)).withType(Brewery.class).withSkipLines(1).build().parse();
+        return breweries;
+    }
 
 }
