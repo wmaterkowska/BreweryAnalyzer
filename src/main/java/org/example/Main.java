@@ -1,87 +1,61 @@
 package org.example;
 
+import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.exceptions.CsvException;
+import com.opencsv.exceptions.CsvValidationException;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws IOException, CsvException {
 
+        Instant start = Instant.now();
 //        Scanner inputPath = new Scanner(System.in);
 //        System.out.println("give a filename and path to it as a String (for example: src/main/resources/breweries_usa.csv) ");
 //        String fileName = inputPath.next();
 
         String fileName = "src/main/resources/breweries_usa.csv";
 
-//        // read whole file at once and print it to terminal
-//        try (CSVReader reader = new CSVReader(new FileReader(fileName))) {
-//            List<String[]> r = reader.readAll();
-//            r.forEach(x -> System.out.println(Arrays.toString(x)));
-//        } catch (CsvMalformedLineException e){
-//            System.out.println("invalid data");
-//
-//        }
-
-
-//        // read file line by line and print it to terminal
-//        try (CSVReader reader = new CSVReader(new FileReader(fileName))) {
-//            //find all headers
-////            String[] header = reader.readNext();
-////            ArrayList<String> headers = new ArrayList<>();
-////            for (int fieldNr = 0; fieldNr < header.length; fieldNr++){
-////                headers.add(header[fieldNr]);
-////            }
-////            System.out.println(headers);
-//
-//            String[] lineInArray;
-//            while ((lineInArray = reader.readNext()) != null) {
-//                for(int column = 0 ; column < lineInArray.length; column++ ){
-//                    System.out.print(lineInArray[column] + "|");
-//                }
-//                System.out.println();
-//            }
-//        } catch(CsvMalformedLineException e) {
-//            System.out.println("invalid data");
-//            System.out.println(e);
-//        }
-
-
-        // test for CsvProcessor headers method
-        CsvProcessor headers = new CsvProcessor();
-        System.out.println(headers.numberOfHeaders(fileName));
-        System.out.println(headers.getHeadersFromCsv(fileName));
-        System.out.println(headers.numberOfHeaders(fileName));
-
-        // test for CSvProcessor reading methods
+        // reading the file========================================
         CsvProcessor fileReader = new CsvProcessor();
-        fileReader.readCsvToList(fileName);
-        fileReader.readCsvAndPrint(fileName);
 
-        CsvProcessor fileReaderLines = new CsvProcessor();
-        fileReaderLines.readCsvLineByLineAndPrint(fileName);
+        List<Brewery> breweries = fileReader.readCsvPutIntoBreweryList(fileName);
+
+        Instant current = Instant.now();
+        long timeElapsed = Duration.between(start, current).toMillis();
+        System.out.println(timeElapsed);
+        // =========================================================
 
 
-        var brewery = new Brewery();
-
-        try{
-            List<Brewery> breweries = new CsvToBeanBuilder(new FileReader(fileName)).withType(Brewery.class).build().parse();
-            breweries.forEach(System.out::println);
-        } catch (RuntimeException e){
-            System.out.println("invalid data " + e);
-        }
-
-        List<Brewery> breweries = new CsvToBeanBuilder(new FileReader(fileName)).withType(Brewery.class).build().parse();
-
-        // BreweryAnalyzer test
+        // analyzing the file ======================================
         BreweryAnalyzer analyzer = new BreweryAnalyzer();
-        analyzer.numberOfBreweryWithWebsite(breweries);
-        analyzer.numberOfBreweryInDelawareWithTacos(breweries);
 
+        analyzer.numberOfBreweriesInEachStateMap(breweries); // 2a: What is the number of breweries in each state?
+        analyzer.topCitiesForBreweries(breweries); // 2b:  What are the top cities for breweries?
+        analyzer.numberOfBreweryWithWebsite(breweries); // 2c: How many breweries have the link to the website?
+        analyzer.numberOfBreweryInDelawareWithTacos(breweries); // 2d: How many breweries located in Delaware state also offer tacos?
 
+        Instant end = Instant.now();
+        timeElapsed = Duration.between(current, end).toMillis();
+        System.out.println(timeElapsed);
+
+        analyzer.breweriesOffersWinePercentState(breweries); // 2e: What percentage of breweries in each state offers wine?
+
+        Instant finish = Instant.now();
+        timeElapsed = Duration.between(end, finish).toMillis();
+        System.out.println(timeElapsed);
+
+        analyzer.findDuplicates(breweries); // number of dupliates
+
+        timeElapsed = Duration.between(finish, Instant.now()).toMillis();
+        System.out.println(timeElapsed);
 
     }
 }

@@ -1,9 +1,15 @@
 package org.example;
 
 import com.opencsv.bean.CsvBindByPosition;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Brewery {
 
     @CsvBindByPosition(position = 0)
@@ -50,4 +56,5 @@ public class Brewery {
 
     @CsvBindByPosition(position = 14)
     private String websites;
+
 }
