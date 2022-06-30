@@ -37,8 +37,15 @@ public class BreweryAnalyzer {
         return counterState;
     }
 
-    // returns map with number of breweries in each state [2a: What is the number of breweries in each state?]
-    public Map<String, Integer> numberOfBreweriesInEachStateMap(List<Brewery> breweries) throws FileNotFoundException {
+    /**
+     * returns map with number of breweries in each state [2a: What is the number of breweries in each state?]
+     *
+     * @param breweries
+     * @param printResult
+     * @return Map with number of breweries in each state
+     * @throws FileNotFoundException
+     */
+    public Map<String, Integer> numberOfBreweriesInEachStateMap(List<Brewery> breweries, boolean printResult) throws FileNotFoundException {
         List<String> states = listOfStatesWithBreweries(breweries);
 
         Map<String, Integer> numberInState = new HashMap<>();
@@ -47,11 +54,19 @@ public class BreweryAnalyzer {
             numberInState.put(state, counterState);
             //log.info("number of breweries in " + state + " : " + counterState);
         }
-        log.info("number of breweries in states: " + numberInState);
+        if (printResult == true) {
+            log.info("number of breweries in states: " + numberInState);
+        }
         return numberInState;
     }
 
-    // return map with 10 top cities for breweries [2b: What are the top cities for breweries?]
+    /**
+     * return map with 10 top cities for breweries [2b: What are the top cities for breweries?]
+     *
+     * @param breweries
+     * @return LinkedHashMap with top cities with breweries
+     * @throws FileNotFoundException
+     */
     public LinkedHashMap<String, Integer> topCitiesForBreweries(List<Brewery> breweries) throws FileNotFoundException {
         List<String> cities = listOfCitiesWithBreweries(breweries);
 
@@ -89,7 +104,14 @@ public class BreweryAnalyzer {
         return topThreeCitiesWithBreweries;
     }
 
-    // returns number of breweries with link to the website [2c: How many breweries have the link to the website?]
+
+    /**
+     * returns number of breweries with link to the website [2c: How many breweries have the link to the website?]
+     *
+     * @param breweries
+     * @return number of breweries with website
+     * @throws FileNotFoundException
+     */
     public int numberOfBreweryWithWebsite(List<Brewery> breweries) throws FileNotFoundException {
 
         int counterBreweryWithWebsite = 0;
@@ -102,12 +124,20 @@ public class BreweryAnalyzer {
         return counterBreweryWithWebsite;
     }
 
-    // returns number of breweries in Delaware that offer tacos [2d: How many breweries located in Delaware state also offer tacos? ]
+
+    /**
+     * returns number of breweries in Delaware that offer tacos [2d: How many breweries located in Delaware state also offer tacos? ]
+     *
+     * @param breweries
+     * @return integer
+     * @throws FileNotFoundException
+     */
     public int numberOfBreweryInDelawareWithTacos(List<Brewery> breweries) throws FileNotFoundException {
 
         int counterBreweryDelawareTacos = 0;
+
         for (Brewery brewery: breweries) {
-            if ((brewery.getProvince().equals("DE") || brewery.getProvince().equals("Delaware") )
+            if ((brewery.getProvince().equals("DE") || brewery.getProvince().contains("Delaware") )
                     && brewery.getMenus() != null
                     && brewery.getMenus().contains("tacos")){
                 counterBreweryDelawareTacos += 1;
@@ -136,10 +166,16 @@ public class BreweryAnalyzer {
         return stateBreweriesWithWineNr;
     }
 
-    // returns map with percentage of breweries that offer wine in each state [2e: What percentage of breweries in each state offers wine?]
+    /**
+     * returns map with percentage of breweries that offer wine in each state [2e: What percentage of breweries in each state offers wine?]
+     *
+     * @param breweries
+     * @return map of city and number of breweries
+     * @throws FileNotFoundException
+     */
     public Map<String, Double> breweriesOffersWinePercentState(List<Brewery> breweries) throws FileNotFoundException {
         Map<String, Integer> breweriesWine = numberOfBreweryInStateWithWine(breweries);
-        Map<String, Integer> numberInStates = numberOfBreweriesInEachStateMap(breweries);
+        Map<String, Integer> numberInStates = numberOfBreweriesInEachStateMap(breweries, false);
 
         Map<String, Double> percentageBreweriesWithWineInState = new HashMap<>();
         for (String key : breweriesWine.keySet()){
@@ -152,23 +188,27 @@ public class BreweryAnalyzer {
     }
 
 
+    /**
+     * find the number of duplicated entries
+     * @param breweries
+     */
     public void findDuplicates(List<Brewery> breweries){
         ArrayList<String> breweriesNoDuplicates = new ArrayList<>();
-        ArrayList<String> duplicatesAddress = new ArrayList<>();
+        ArrayList<String> duplicatedAddresses = new ArrayList<>();
         List<Brewery> duplicates = new ArrayList<>();
 
-        for (Brewery entry : breweries){
-            entry.getAddress();
+        for (Brewery brewery : breweries){
+            brewery.getAddress();
             Collection<String> fullAddress = new ArrayList<>();
-            fullAddress.add(entry.getAddress());
-            fullAddress.add(entry.getCity());
+            fullAddress.add(brewery.getAddress());
+            fullAddress.add(brewery.getCity());
 
             if (!breweriesNoDuplicates.containsAll(fullAddress)){
-                breweriesNoDuplicates.add(entry.getAddress() + "," + entry.getCity());
+                breweriesNoDuplicates.add(brewery.getAddress() + "," + brewery.getCity());
                 //breweriesNoDuplicates.containsAll(fullAddress);
             } else{
-                duplicatesAddress.add(entry.getAddress());
-                duplicates.add(entry);
+                duplicatedAddresses.add(brewery.getAddress());
+                duplicates.add(brewery);
             }
         }
         log.info("number of duplicates: " + duplicates.size());

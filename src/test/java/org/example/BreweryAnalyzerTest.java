@@ -50,7 +50,7 @@ class BreweryAnalyzerTest {
         BreweryAnalyzer analyzer = new BreweryAnalyzer();
         // act
         Map<String, Integer> breweriesState = new HashMap<>();
-        breweriesState = analyzer.numberOfBreweriesInEachStateMap(listBreweriesExample);
+        breweriesState = analyzer.numberOfBreweriesInEachStateMap(listBreweriesExample, true);
         // verify
         assert( breweriesState.get("California") == 4);
     }
