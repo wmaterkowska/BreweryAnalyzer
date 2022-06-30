@@ -111,9 +111,9 @@ public class CsvProcessor {
     }
 
     // read CSV file into object - Brewery list
-    public List<Brewery> readCsvPutIntoBreweryList(String filename) throws FileNotFoundException {
+    public List<Brewery> readCsvPutIntoBreweryList(FileReader fileReader) throws FileNotFoundException {
 
-        List<Brewery> breweries = new CsvToBeanBuilder(new FileReader(filename))
+        List<Brewery> breweries = new CsvToBeanBuilder(fileReader)
                 .withType(Brewery.class).withSkipLines(1).build().parse();
         return breweries;
 
