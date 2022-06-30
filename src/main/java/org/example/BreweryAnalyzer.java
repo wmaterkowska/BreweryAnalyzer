@@ -1,11 +1,12 @@
 package org.example;
 
-import org.w3c.dom.ls.LSOutput;
-
 import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class BreweryAnalyzer {
 
     private List<String> listOfStatesWithBreweries(List<Brewery> breweries) throws FileNotFoundException {
@@ -44,8 +45,9 @@ public class BreweryAnalyzer {
         for (String state: states) {
             int counterState = getNumberOfBreweriesInState(breweries, state);
             numberInState.put(state, counterState);
-            //System.out.println("number of breweries in " + state + " : " + counterState);
+            //log.info("number of breweries in " + state + " : " + counterState);
         }
+        log.info("number of breweries in states: " + numberInState);
         return numberInState;
     }
 
@@ -62,7 +64,6 @@ public class BreweryAnalyzer {
                 }
             }
             cityBreweriesNumber.put(city, counterCity);
-            //System.out.println("number of breweries in " + city + " : " + counterCity);
         }
 
         LinkedHashMap<String, Integer> topThreeCitiesWithBreweries =
@@ -84,7 +85,7 @@ public class BreweryAnalyzer {
 //            }
 //        }
 
-        System.out.println("top cities with breweries: " + topThreeCitiesWithBreweries);
+        log.info("top cities with breweries: " + topThreeCitiesWithBreweries);
         return topThreeCitiesWithBreweries;
     }
 
@@ -93,11 +94,11 @@ public class BreweryAnalyzer {
 
         int counterBreweryWithWebsite = 0;
         for (int listElement = 0; listElement < breweries.size(); listElement++){
-            if ( breweries.get(listElement).getWebsites() != null ){
+            if ( breweries.get(listElement).getWebsites() != null && breweries.get(listElement).getWebsites() != "" ){
                 counterBreweryWithWebsite += 1;
             }
         }
-        System.out.println("number of breweries with link to the website: " + counterBreweryWithWebsite);
+        log.info("number of breweries with link to the website: " + counterBreweryWithWebsite);
         return counterBreweryWithWebsite;
     }
 
@@ -106,13 +107,13 @@ public class BreweryAnalyzer {
 
         int counterBreweryDelawareTacos = 0;
         for (Brewery brewery: breweries) {
-            if (brewery.getProvince().equals("DE")
+            if ((brewery.getProvince().equals("DE") || brewery.getProvince().equals("Delaware") )
                     && brewery.getMenus() != null
                     && brewery.getMenus().contains("tacos")){
                 counterBreweryDelawareTacos += 1;
             }
         }
-        System.out.println("number of breweries located in Delaware that also offer tacos: " + counterBreweryDelawareTacos);
+        log.info("number of breweries located in Delaware that also offer tacos: " + counterBreweryDelawareTacos);
         return counterBreweryDelawareTacos;
     }
 
@@ -130,7 +131,7 @@ public class BreweryAnalyzer {
                 }
             }
             stateBreweriesWithWineNr.put(state, counterBreweryStateWine);
-            //System.out.println("number of breweries with wine in " + state + ": " + counterBreweryStateWine);
+            //log.info("number of breweries with wine in " + state + ": " + counterBreweryStateWine);
         }
         return stateBreweriesWithWineNr;
     }
@@ -138,15 +139,40 @@ public class BreweryAnalyzer {
     // returns map with percentage of breweries that offer wine in each state [2e: What percentage of breweries in each state offers wine?]
     public Map<String, Double> breweriesOffersWinePercentState(List<Brewery> breweries) throws FileNotFoundException {
         Map<String, Integer> breweriesWine = numberOfBreweryInStateWithWine(breweries);
+        Map<String, Integer> numberInStates = numberOfBreweriesInEachStateMap(breweries);
 
         Map<String, Double> percentageBreweriesWithWineInState = new HashMap<>();
         for (String key : breweriesWine.keySet()){
-            int numberInState = numberOfBreweriesInEachStateMap(breweries).get(key);
+            int numberInState = numberInStates.get(key);
             double percentage = (( (double) breweriesWine.get(key) / numberInState) * 100);
             percentageBreweriesWithWineInState.put(key, percentage);
         }
-        System.out.println(percentageBreweriesWithWineInState);
+        log.info("percentage of breweries with wine in each state: " + percentageBreweriesWithWineInState );
         return percentageBreweriesWithWineInState;
+    }
+
+
+    public void findDuplicates(List<Brewery> breweries){
+        ArrayList<String> breweriesNoDuplicates = new ArrayList<>();
+        ArrayList<String> duplicatesAddress = new ArrayList<>();
+        List<Brewery> duplicates = new ArrayList<>();
+
+        for (Brewery entry : breweries){
+            entry.getAddress();
+            Collection<String> fullAddress = new ArrayList<>();
+            fullAddress.add(entry.getAddress());
+            fullAddress.add(entry.getCity());
+
+            if (!breweriesNoDuplicates.containsAll(fullAddress)){
+                breweriesNoDuplicates.add(entry.getAddress() + "," + entry.getCity());
+                //breweriesNoDuplicates.containsAll(fullAddress);
+            } else{
+                duplicatesAddress.add(entry.getAddress());
+                duplicates.add(entry);
+            }
+        }
+        log.info("number of duplicates: " + duplicates.size());
+
     }
 
 }
