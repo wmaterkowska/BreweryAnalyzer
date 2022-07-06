@@ -1,6 +1,6 @@
-# ===========================================
+# ===============================
 #  Brewery Analyzer
-# ===========================================
+# ===============================
 
 <p>The program reads breweries from the csv file from the input and analyze it according to questions: <br>
 a. What is the number of breweries in each state? <br>
